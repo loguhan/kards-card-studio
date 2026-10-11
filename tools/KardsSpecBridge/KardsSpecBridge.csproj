@@ -36,7 +36,9 @@
 
   <Target Name="CheckCompilerConfigured" BeforeTargets="ResolveAssemblyReferences">
     <Error Condition="'$(CompilerSrc)' == ''"
-           Text="找不到 KardsCardCompiler。请设环境变量 KARDS_COMPILER_SRC，或把仓库克隆到 $(MSBuildThisFileDirectory)..\..\vendor\KardsCardCompiler" />
+           Text="找不到 KardsCardCompiler。请任选其一：&#xA;  1. 运行 scripts/Setup.ps1 自动准备&#xA;  2. 设环境变量 KARDS_COMPILER_SRC 指向该仓库&#xA;  3. 克隆到 $(MSBuildThisFileDirectory)..\..\vendor\KardsCardCompiler" />
+    <Error Condition="'$(CompilerSrc)' != '' and !Exists('$(CoreDll)')"
+           Text="找到了 KardsCardCompiler（$(CompilerSrc)），但 Core 尚未编译：文件不存在 $(CoreDll)&#xA;请先执行：dotnet build &quot;$(CompilerSrc)\src\KardsCardCompiler.Core&quot; -c Release" />
   </Target>
 
 </Project>

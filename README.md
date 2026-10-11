@@ -57,10 +57,24 @@ KardsDIY_<卡名>_ue_P.pak
 - KARDS 的可加载工程（用于挂载 `KardsCardBuilder` 插件）
 - **[KardsCardCompiler](https://github.com/)** —— 卡包 IR 定义（外部依赖，见下）
 
-### 2. 配置
+### 2. 一键准备
 
 ```powershell
-Copy-Item config.example.json config.local.json
+.\scripts\Setup.ps1
+```
+
+它会：生成 `config.local.json`、定位并构建 `KardsCardCompiler`、
+构建本仓库工具，最后列出你还缺哪些配置。
+
+已把 `KardsCardCompiler` 放在别处的话：
+
+```powershell
+.\scripts\Setup.ps1 -CompilerSrc C:\src\KardsCardCompiler
+```
+
+### 3. 配置路径
+
+```powershell
 notepad config.local.json
 ```
 
@@ -81,7 +95,7 @@ notepad config.local.json
 也可以改用环境变量：`KARDS_ENGINE`、`KARDS_PROJECT`、`KARDS_REPAK`、
 `KARDS_PAKS_DIR`、`KARDS_PAK_KEY`、`KARDS_COMPILER_SRC`、`KARDS_BASE_DIR`。
 
-### 3. 准备基础数据
+### 4. 准备基础数据
 
 流水线需要从**原版游戏主 pak** 里取出两样东西放进 `baseDir`：
 
@@ -102,7 +116,7 @@ repak -a <pakKey> unpack <主pak> -o base_extract
 > 也可以跑 `.\workflow\BuildUeCard.ps1 -DumpApi /Script/kards.CardFunctionsStub`
 > 之类的命令先把符号表 dump 出来，写卡时会用到。
 
-### 4. 编译插件
+### 5. 编译插件
 
 把 `plugins/` 整个目录放进 UE 工程的 `Plugins/` 下：
 
@@ -114,7 +128,7 @@ repak -a <pakKey> unpack <主pak> -o base_extract
 
 首次构建流水线时它会自动用 UBT 编译。
 
-### 5. 写第一张卡
+### 6. 写第一张卡
 
 复制 `cards/BlitzArtillery1011Pack.cs` 改成你的卡。核心就是两件事：
 
@@ -148,7 +162,7 @@ public sealed class MyCardPack : ICardPackDefinition, ISpecBlueprintDefinition
 }
 ```
 
-### 6. 构建
+### 7. 构建
 
 ```powershell
 cd workflow
@@ -186,6 +200,8 @@ kards-card-studio/
 │   ├── BuildFromCs.ps1               ★ 入口：C# → pak
 │   ├── BuildUeCard.ps1               spec → UE 8 步 → pak
 │   └── ...
+├── scripts/                    环境准备脚本
+│   └── Setup.ps1                     一键准备依赖与配置
 ├── docs/                       参考文档
 ├── config.example.json         配置模板
 └── .gitignore
