@@ -1,0 +1,18 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "0.1.0",
+  "FriendlyName": "KARDS Card Builder",
+  "Description": "Assembles real K2 node graphs (event/call/branch/variable) for KARDS card blueprints, compiles them in-editor and saves only on a clean compile.",
+  "Category": "Editor",
+  "EnabledByDefault": false,
+  "CanContainContent": false,
+  "Modules": [
+    {
+      "Name": "KardsCardBuilder",
+      "Type": "Editor",
+      "LoadingPhase": "Default",
+      "PlatformAllowList": [ "Win64" ]
+    }
+  ]
+}

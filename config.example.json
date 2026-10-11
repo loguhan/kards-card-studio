@@ -1,0 +1,16 @@
+{
+  "_comment": "复制本文件为 config.local.json 并改成你机器上的真实路径。config.local.json 不入库。",
+  "engine": "D:\\UE_5.6",
+  "editorCmd": "D:\\UE_5.6\\Engine\\Binaries\\Win64\\UnrealEditor-Cmd.exe",
+  "ubt": "D:\\UE_5.6\\Engine\\Build\\BatchFiles\\Build.bat",
+  "project": "D:\\KardsRecoveredProject\\UnrealProject\\kards.uproject",
+  "repak": "C:\\tools\\repak\\repak.exe",
+  "python": "C:\\Python313\\python.exe",
+  "paksDir": "C:\\Program Files\\KARDS\\kards\\Content\\Paks",
+  "pakKey": "0xC257932734957B6D467FA16FCF728D5A16A5BDD07F6E20EE6E3155E898305CC0",
+  "usmap": "C:\\Dumper-7\\Mappings\\5.6.1-0+++UE5+Release-5.6-Fork-kards.usmap",
+  "_buildRoot_comment": "可选。构建产物输出目录，默认 <仓库根>\\_build",
+  "buildRoot": "",
+  "compilerSrc": "C:\\src\\KardsCardCompiler",
+  "baseDir": ""
+}

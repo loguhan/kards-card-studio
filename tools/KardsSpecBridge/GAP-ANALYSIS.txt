@@ -1,0 +1,55 @@
+IR 表达能力 vs spec 全量能力 —— 缺口清单
+================================================
+
+【IR 已有的】（BlueprintIr.cs）
+表达式：
+  Variable / Member / Self / SelfProperty
+  Int / Byte / Bool / Float / Name / String / EmptyText 字面量
+  IntBinary(+,-,*,/,%) / IntComparison(6种) / BoolBinary(and,or,xor) / Not
+  LocalCall(value) / Call(value)
+语句：
+  Call / If / Assign / While / Return / Break / Continue / LocalCall
+函数：
+  BlueprintFunctionIr(function/event, variables, body, owner override)
+类：
+  BlueprintClassIr(package, asset, parent, functions, members)
+
+【spec 有的】
+表达式 kind：self param local member property call literal cast arrayMake
+语句 kind：call if set localSet localDecl cast result foreach（seq 未实现）
+图 kind：event function k2(RawK2 任意 UK2Node_*)
+
+【缺口 = IR 写不出、spec 能表达】(按影响排序)
+G1. cast 表达式           —— IR 无 cast 表达式类型
+                            ⇒ 无法做 DynamicCast / 向上转型
+                            （我已用 bridge 侧自动 upcast 部分绕过，但不完整）
+G2. property 表达式       —— IR 无"读别的对象属性"（只有 SelfProperty）
+                            ⇒ 读 opp.side / card.CardID 这类必须绕成函数调用
+G3. arrayMake 表达式      —— IR 无数组构造
+                            ⇒ 无法组装 TArray<int>（ConvertCard 的 CardIDs）
+G4. foreach 语句          —— IR 只有 while
+                            ⇒ bridge 已做形态识别，但脆弱
+G5. k2 原生节点图         —— IR 无
+                            ⇒ 任意官方 UK2Node_* 无法触及（能力上限被锁死）
+G6. result 语句           —— IR 用 Return(value)，bridge 转 result
+                            ✓ 实际可用
+G7. 局部变量 vs 成员变量  —— IR 的 Role 语义与插件不同
+                            ✓ bridge 已处理（提升为 b_ 成员）
+
+【结论】
+真正卡住"100%"的是 G1/G2/G3/G5。
+其中 G2 我可以直接从 KARDS header 契约拿到属性表；
+G1/G3 是表达式构造；
+G5 是终极逃生舱。
+
+【方案】
+不修改 KardsCardCompiler.Core（避免动你现有工具链），
+在 KardsSpecBridge 里做"IR → spec"的翻译增强，
+并额外提供一个**原生 spec 语句/表达式的 C# 构建 API**，
+让 IR 表达不了的部分可以直接用 spec 结构写。
+
+这样：
+  * 能用 IR 表达的 → 继续用 IR（保持与路线 A 兼容）
+  * IR 表达不了的   → 用 Bridge 原生 API 直接构造 spec 节点
+  * 两者可混用
+  ⇒ 目标达成：C# 写逻辑，100% 覆盖

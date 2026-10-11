@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>KardsSpecBridge</AssemblyName>
+    <RootNamespace>KardsSpecBridge</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <!--
+    引用 C# 写卡编译器的 Core 程序集，复用它的蓝图 IR 类型
+    （BlueprintExpression / BlueprintStatement / CardDefinition ...）。
+    用 Reference（而不是 ProjectReference）是为了避免把整个编译器解决方案
+    拖进构建图 —— 我们只需要 IR 的数据结构，不需要它的 .uasset 写出能力。
+
+    路径解析顺序：
+      1. 环境变量 KARDS_COMPILER_SRC
+      2. config.local.json 同级的 vendor/KardsCardCompiler
+  -->
+  <PropertyGroup>
+    <CompilerSrc Condition="'$(KARDS_COMPILER_SRC)' != ''">$(KARDS_COMPILER_SRC)</CompilerSrc>
+    <CompilerSrc Condition="'$(CompilerSrc)' == '' and Exists('$(MSBuildThisFileDirectory)..\..\vendor\KardsCardCompiler')">$(MSBuildThisFileDirectory)..\..\vendor\KardsCardCompiler</CompilerSrc>
+    <CoreDll>$(CompilerSrc)\src\KardsCardCompiler.Core\bin\Release\net8.0\KardsCardCompiler.Core.dll</CoreDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="KardsCardCompiler.Core">
+      <HintPath>$(CoreDll)</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CheckCompilerConfigured" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="'$(CompilerSrc)' == ''"
+           Text="找不到 KardsCardCompiler。请设环境变量 KARDS_COMPILER_SRC，或把仓库克隆到 $(MSBuildThisFileDirectory)..\..\vendor\KardsCardCompiler" />
+  </Target>
+
+</Project>

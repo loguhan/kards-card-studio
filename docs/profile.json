@@ -1,0 +1,36 @@
+{
+  "formatVersion": 1,
+  "id": "ue5.6.1",
+  "engine": "VER_UE5_6",
+  "kardsBuild": "2026.07.14",
+  "buildMode": "from-scratch",
+  "packageLayout": {
+    "cardBlueprintRoot": "/Game/Blueprints/Cards/Mods",
+    "textureRoot": "/Game/Assets/Textures/Images/Mods",
+    "pakVersion": "V11",
+    "pakWireValue": 12,
+    "mountPoint": "../../../",
+    "patchPakSuffix": "_P.pak"
+  },
+  "blueprint": {
+    "parentClassPackage": "/Script/kards",
+    "parentClassName": "BaseCardObject",
+    "generatedClassImportPackage": "/Script/Engine",
+    "generatedClassImportName": "BlueprintGeneratedClass"
+  },
+  "artifacts": {
+    "nativeContracts": {
+      "path": "native-contracts.json",
+      "sha256": "D92DE86E54A85B655B00169DBD05BE49BE084E8E0621218CE16A71571AA33D91"
+    },
+    "usmap": {
+      "path": "kards-5.6.1.usmap",
+      "sha256": "66BDA6823EA691A7EB028160BFFA6B2EC90A44053D754852C71A85479FCACE58"
+    },
+    "assetRegistry": {
+      "path": "AssetRegistry.bin",
+      "sha256": "D8BAA86FF639326DE71EBE611752989BFC05F2035213D4CE9EA8889A56537B00"
+    }
+  }
+}
+

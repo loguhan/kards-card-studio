@@ -1,0 +1,428 @@
+{
+  "_comment": "「情报篡改」——苏联 1K 伏击指令。整张卡由 KardsCardBuilder 在 UE 编辑器里直接拼 K2 节点生成。判定与效果分离，和游戏里 52 张真实伏击卡一致（见 cards/设计-情报篡改.md）。",
+  "pipeline": {
+    "cardName": "card_event_intelligence_tampering",
+    "pakName": "KardsDIY_intel_tampering_ue_P.pak",
+    "assetPathInPak": "kards/Content/Blueprints/Cards/Mods/Soviet/units/card_event_intelligence_tampering",
+    "filterPath": "/Game/Blueprints/Cards/Mods",
+    "hostRegistry": "E:\\KARDS\\card_pipeline\\_work\\base\\AssetRegistry.bin",
+    "baseCatalog": "E:\\KARDS\\card_pipeline\\_work\\base\\deckCodeIDsTable2",
+    "catalogPathInPak": "kards/Content/Structs/deckCodeIDsTable2",
+    "deckCode": "VA",
+    "cardId": 910102
+  },
+  "package": "/Game/Blueprints/Cards/Mods/Soviet/units/card_event_intelligence_tampering",
+  "assetName": "card_event_intelligence_tampering",
+  "parentClass": "/Script/kards.BaseCardObject",
+
+  "variables": [
+    { "name": "tmp_cost", "type": "int" },
+    { "name": "tmp_should", "type": "bool" },
+    { "name": "tmp_stopped", "type": "bool" },
+    { "name": "tmp_pool", "type": "array:object:/Script/kards.BaseCardObject" },
+    { "name": "tmp_candidates", "type": "array:object:/Script/kards.BaseCardObject" },
+    { "name": "tmp_card", "type": "object:/Script/kards.BaseCardObject" },
+    { "name": "tmp_n", "type": "int" },
+    { "name": "tmp_idx", "type": "int" },
+    { "name": "tmp_target", "type": "object:/Script/kards.BaseCardObject" },
+    { "name": "tmp_ids", "type": "array:int" },
+    { "name": "tmp_newIds", "type": "array:int" }
+  ],
+
+  "defaults": [
+    { "name": "Name", "type": "name", "value": "card_event_intelligence_tampering" },
+    { "name": "title", "type": "text", "value": "情报篡改" },
+    { "name": "Text", "type": "text", "value": "敌方使用指令时，先将其转换为 1 张花费相近的指令。" },
+    { "name": "flavorText", "type": "text", "value": "「命令是向那边开炮……那边。」" },
+    { "name": "Type", "type": "enum", "value": "gotcha" },
+    { "name": "faction", "type": "enum", "value": "Soviet" },
+    { "name": "kredits", "type": "int", "value": 1 },
+    { "name": "rarity", "type": "enum", "value": "Common" },
+    { "name": "cardSet", "type": "enum", "value": "Basic" },
+    { "name": "isInPermanentPool", "type": "bool", "value": true },
+    { "name": "usedTriggers", "enum": "ERegisteredCardFunction", "values": [ "OnOtherCardPlayedFromHand" ] }
+  ],
+
+  "graphs": [
+    {
+      "kind": "function",
+      "function": "ShouldGotchaTrigger",
+      "owner": "/Script/kards.BaseCardObject",
+      "body": [
+        {
+          "kind": "result",
+          "args": {
+            "shouldIt": {
+              "kind": "call",
+              "owner": "/Script/Engine.KismetMathLibrary",
+              "function": "BooleanAND",
+              "args": {
+                "A": {
+                  "kind": "call",
+                  "owner": "/Script/kards.BaseCardObject",
+                  "function": "IsOrder",
+                  "target": { "kind": "param", "name": "triggerCard" },
+                  "pin": "isIt"
+                },
+                "B": {
+                  "kind": "call",
+                  "owner": "/Script/Engine.KismetMathLibrary",
+                  "function": "BooleanAND",
+                  "args": {
+                    "A": {
+                      "kind": "call",
+                      "owner": "/Script/Engine.KismetMathLibrary",
+                      "function": "EqualEqual_ByteByte",
+                      "args": {
+                        "A": {
+                          "kind": "property",
+                          "owner": "/Script/kards.BaseCardObject",
+                          "name": "side",
+                          "target": { "kind": "param", "name": "triggerCard" }
+                        },
+                        "B": {
+                          "kind": "call",
+                          "owner": "/Script/kards.BaseCardObject",
+                          "function": "GetOppositeSide",
+                          "target": { "kind": "self" },
+                          "pin": "oppositeSide"
+                        }
+                      }
+                    },
+                    "B": {
+                      "kind": "call",
+                      "owner": "/Script/Engine.KismetMathLibrary",
+                      "function": "Greater_IntInt",
+                      "args": {
+                        "A": {
+                          "kind": "call",
+                          "owner": "/Script/kards.BaseCardObject",
+                          "function": "getTotalKreditCost",
+                          "target": { "kind": "param", "name": "triggerCard" },
+                          "pin": "totalKreditCost"
+                        },
+                        "B": { "kind": "literal", "type": "int", "value": 0 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "kind": "event",
+      "function": "OnOtherCardPlayedFromHand",
+      "body": [
+        {
+          "kind": "call",
+          "target": { "kind": "self" },
+          "function": "ShouldGotchaTrigger",
+          "args": { "triggerCard": { "kind": "param", "name": "cardPlayed" } },
+          "outs": { "shouldIt": { "var": "tmp_should" } }
+        },
+        {
+          "kind": "if",
+          "cond": { "kind": "member", "name": "tmp_should" },
+          "then": [
+            {
+              "kind": "set",
+              "var": "tmp_cost",
+              "value": {
+                "kind": "call",
+                "owner": "/Script/kards.BaseCardObject",
+                "function": "getTotalKreditCost",
+                "target": { "kind": "param", "name": "cardPlayed" },
+                "pin": "totalKreditCost"
+              }
+            },
+
+            {
+              "kind": "call",
+              "target": { "kind": "member", "name": "cardFunction" },
+              "function": "GotchaTriggered",
+              "args": {
+                "card": { "kind": "self" },
+                "instigatorID": { "kind": "member", "name": "CardID" },
+                "stopFurtherCardActions": { "kind": "literal", "type": "bool", "value": true },
+                "skipDiscardingOrder": { "kind": "literal", "type": "bool", "value": false }
+              },
+              "outs": { "qqq": { "var": "tmp_stopped" } }
+            },
+
+            {
+              "kind": "call",
+              "target": { "kind": "member", "name": "cardFunction" },
+              "function": "GetAllActiveStaticCards",
+              "args": {
+                "includeNotAttainable": { "kind": "literal", "type": "bool", "value": false },
+                "includeReserved": { "kind": "literal", "type": "bool", "value": false }
+              },
+              "outs": { "Cards": { "var": "tmp_pool" } }
+            },
+
+            {
+              "kind": "foreach",
+              "array": { "kind": "member", "name": "tmp_pool" },
+              "outs": { "Array Element": { "var": "tmp_card" } },
+              "then": [
+                {
+                  "kind": "if",
+                  "cond": {
+                    "kind": "call",
+                    "owner": "/Script/Engine.KismetMathLibrary",
+                    "function": "BooleanAND",
+                    "args": {
+                      "A": {
+                        "kind": "call",
+                        "owner": "/Script/Engine.KismetMathLibrary",
+                        "function": "BooleanAND",
+                        "args": {
+                          "A": {
+                            "kind": "call",
+                            "owner": "/Script/kards.BaseCardObject",
+                            "function": "IsOrder",
+                            "target": { "kind": "member", "name": "tmp_card" },
+                            "pin": "isIt"
+                          },
+                          "B": {
+                            "kind": "call",
+                            "owner": "/Script/Engine.KismetMathLibrary",
+                            "function": "BooleanAND",
+                            "args": {
+                              "A": {
+                                "kind": "call",
+                                "owner": "/Script/Engine.KismetMathLibrary",
+                                "function": "EqualEqual_ByteByte",
+                                "args": {
+                                  "A": {
+                                    "kind": "property",
+                                    "owner": "/Script/kards.BaseCardObject",
+                                    "name": "faction",
+                                    "target": { "kind": "member", "name": "tmp_card" }
+                                  },
+                                  "B": {
+                                    "kind": "property",
+                                    "owner": "/Script/kards.BaseCardObject",
+                                    "name": "faction",
+                                    "target": { "kind": "param", "name": "cardPlayed" }
+                                  }
+                                }
+                              },
+                              "B": {
+                                "kind": "call",
+                                "owner": "/Script/Engine.KismetMathLibrary",
+                                "function": "Not_PreBool",
+                                "args": {
+                                  "A": {
+                                    "kind": "call",
+                                    "owner": "/Script/Engine.KismetMathLibrary",
+                                    "function": "EqualEqual_NameName",
+                                    "args": {
+                                      "A": {
+                                        "kind": "property",
+                                        "owner": "/Script/kards.BaseCardObject",
+                                        "name": "Name",
+                                        "target": { "kind": "member", "name": "tmp_card" }
+                                      },
+                                      "B": {
+                                        "kind": "property",
+                                        "owner": "/Script/kards.BaseCardObject",
+                                        "name": "Name",
+                                        "target": { "kind": "param", "name": "cardPlayed" }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "B": {
+                        "kind": "call",
+                        "owner": "/Script/Engine.KismetMathLibrary",
+                        "function": "BooleanAND",
+                        "args": {
+                          "A": {
+                            "kind": "call",
+                            "owner": "/Script/Engine.KismetMathLibrary",
+                            "function": "GreaterEqual_IntInt",
+                            "args": {
+                              "A": {
+                                "kind": "call",
+                                "owner": "/Script/kards.BaseCardObject",
+                                "function": "getTotalKreditCost",
+                                "target": { "kind": "member", "name": "tmp_card" },
+                                "pin": "totalKreditCost"
+                              },
+                              "B": {
+                                "kind": "call",
+                                "owner": "/Script/Engine.KismetMathLibrary",
+                                "function": "Subtract_IntInt",
+                                "args": {
+                                  "A": { "kind": "member", "name": "tmp_cost" },
+                                  "B": { "kind": "literal", "type": "int", "value": 1 }
+                                }
+                              }
+                            }
+                          },
+                          "B": {
+                            "kind": "call",
+                            "owner": "/Script/Engine.KismetMathLibrary",
+                            "function": "LessEqual_IntInt",
+                            "args": {
+                              "A": {
+                                "kind": "call",
+                                "owner": "/Script/kards.BaseCardObject",
+                                "function": "getTotalKreditCost",
+                                "target": { "kind": "member", "name": "tmp_card" },
+                                "pin": "totalKreditCost"
+                              },
+                              "B": {
+                                "kind": "call",
+                                "owner": "/Script/Engine.KismetMathLibrary",
+                                "function": "Add_IntInt",
+                                "args": {
+                                  "A": { "kind": "member", "name": "tmp_cost" },
+                                  "B": { "kind": "literal", "type": "int", "value": 1 }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "kind": "call",
+                      "owner": "/Script/Engine.KismetArrayLibrary",
+                      "function": "Array_Add",
+                      "args": {
+                        "TargetArray": { "kind": "member", "name": "tmp_candidates" },
+                        "NewItem": { "kind": "member", "name": "tmp_card" }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+
+            {
+              "kind": "set",
+              "var": "tmp_n",
+              "value": {
+                "kind": "call",
+                "owner": "/Script/Engine.KismetArrayLibrary",
+                "function": "Array_Length",
+                "args": { "TargetArray": { "kind": "member", "name": "tmp_candidates" } },
+                "pin": "ReturnValue"
+              }
+            },
+
+            {
+              "kind": "if",
+              "cond": {
+                "kind": "call",
+                "owner": "/Script/Engine.KismetMathLibrary",
+                "function": "Greater_IntInt",
+                "args": {
+                  "A": { "kind": "member", "name": "tmp_n" },
+                  "B": { "kind": "literal", "type": "int", "value": 0 }
+                }
+              },
+              "then": [
+                {
+                  "kind": "set",
+                  "var": "tmp_idx",
+                  "value": {
+                    "kind": "call",
+                    "owner": "/Script/kards.CardFunctionsStub",
+                    "function": "RandomIntFromRangeWithStream",
+                    "target": { "kind": "member", "name": "cardFunction" },
+                    "args": {
+                      "Minimum": { "kind": "literal", "type": "int", "value": 0 },
+                      "Maximum": {
+                        "kind": "call",
+                        "owner": "/Script/Engine.KismetMathLibrary",
+                        "function": "Subtract_IntInt",
+                        "args": {
+                          "A": { "kind": "member", "name": "tmp_n" },
+                          "B": { "kind": "literal", "type": "int", "value": 1 }
+                        }
+                      }
+                    },
+                    "pin": "randomResult"
+                  }
+                },
+                {
+                  "kind": "set",
+                  "var": "tmp_target",
+                  "value": {
+                    "kind": "call",
+                    "owner": "/Script/Engine.KismetArrayLibrary",
+                    "function": "Array_Get",
+                    "args": {
+                      "TargetArray": { "kind": "member", "name": "tmp_candidates" },
+                      "Index": { "kind": "member", "name": "tmp_idx" }
+                    },
+                    "pin": "Item"
+                  }
+                },
+                {
+                  "kind": "set",
+                  "var": "tmp_ids",
+                  "value": {
+                    "kind": "arrayMake",
+                    "type": "int",
+                    "items": [
+                      {
+                        "kind": "property",
+                        "owner": "/Script/kards.BaseCardObject",
+                        "name": "CardID",
+                        "target": { "kind": "param", "name": "cardPlayed" }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "call",
+                  "target": { "kind": "member", "name": "cardFunction" },
+                  "function": "ConvertCard",
+                  "args": {
+                    "CardIDs": { "kind": "member", "name": "tmp_ids" },
+                    "instigatorID": { "kind": "member", "name": "CardID" },
+                    "convertToCardName": {
+                      "kind": "property",
+                      "owner": "/Script/kards.BaseCardObject",
+                      "name": "Name",
+                      "target": { "kind": "member", "name": "tmp_target" }
+                    },
+                    "convertIntoCardID": { "kind": "literal", "type": "int", "value": 0 },
+                    "skipTrigger": { "kind": "literal", "type": "bool", "value": false }
+                  },
+                  "outs": { "newCardIDs": { "var": "tmp_newIds" } }
+                },
+                {
+                  "kind": "call",
+                  "target": { "kind": "member", "name": "cardFunction" },
+                  "function": "AddToBattleLog",
+                  "args": {
+                    "CardID": { "kind": "member", "name": "CardID" },
+                    "instigatorID": { "kind": "member", "name": "CardID" },
+                    "cardHidden": { "kind": "literal", "type": "bool", "value": false },
+                    "showAnimation": { "kind": "literal", "type": "bool", "value": true }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

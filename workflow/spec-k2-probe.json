@@ -1,0 +1,67 @@
+{
+  "_comment": "kind:'k2' 通用层探针：官方节点按类名实例化 + 反射调 AddInputPin + props/pins 通用赋值。",
+  "pipeline": {
+    "cardName": "card_k2_probe",
+    "pakName": "KardsDIY_k2_probe_P.pak",
+    "assetPathInPak": "kards/Content/Blueprints/Cards/Mods/Soviet/units/card_k2_probe",
+    "filterPath": "/Game/Blueprints/Cards/Mods",
+    "hostRegistry": "E:\\KARDS\\card_pipeline\\_work\\base\\AssetRegistry.bin",
+    "baseCatalog": "E:\\KARDS\\card_pipeline\\_work\\base\\deckCodeIDsTable2",
+    "catalogPathInPak": "kards/Content/Structs/deckCodeIDsTable2",
+    "deckCode": "ZX",
+    "cardId": 910900
+  },
+  "package": "/Game/Blueprints/Cards/Mods/Soviet/units/card_k2_probe",
+  "assetName": "card_k2_probe",
+  "parentClass": "/Script/kards.BaseCardObject",
+  "defaults": [
+    { "name": "Name", "type": "name", "value": "card_k2_probe" },
+    { "name": "title", "type": "text", "value": "K2探针" },
+    { "name": "Text", "type": "text", "value": "通用节点层探针。" },
+    { "name": "Type", "type": "enum", "value": "gotcha" },
+    { "name": "faction", "type": "enum", "value": "Soviet" },
+    { "name": "kredits", "type": "int", "value": 1 },
+    { "name": "cardSet", "type": "enum", "value": "Basic" },
+    { "name": "isInPermanentPool", "type": "bool", "value": true },
+    { "name": "usedTriggers", "enum": "ERegisteredCardFunction", "values": [ "OnOtherCardPlayedFromHand" ] }
+  ],
+  "graphs": [
+    {
+      "kind": "k2",
+      "function": "OnOtherCardPlayedFromHand",
+      "nodes": [
+        {
+          "id": "e1", "class": "K2Node_Event",
+          "function": "OnOtherCardPlayedFromHand",
+          "owner": "/Script/kards.BaseCardObject",
+          "pos": [0, 0], "comment": "event"
+        },
+        {
+          "id": "v1", "class": "K2Node_VariableGet",
+          "variable": "cardFunction", "pos": [0, 260]
+        },
+        {
+          "id": "s1", "class": "K2Node_ExecutionSequence",
+          "pos": [420, 0],
+          "api": [
+            { "fn": "AddInputPin" },
+            { "fn": "AddInputPin" }
+          ]
+        },
+        {
+          "id": "l1", "class": "K2Node_CallFunction",
+          "function": "AddToBattleLog", "owner": "/Script/kards.CardFunctionsStub",
+          "pos": [860, 0],
+          "pins": {
+            "defaults": { "CardID": "0", "instigatorID": "0", "cardHidden": "false", "showAnimation": "true" }
+          }
+        }
+      ],
+      "links": [
+        [ "e1", "then", "s1", "execute" ],
+        [ "v1", "cardFunction", "l1", "self" ],
+        [ "s1", "then_0", "l1", "execute" ]
+      ]
+    }
+  ]
+}

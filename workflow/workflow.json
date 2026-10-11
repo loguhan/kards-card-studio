@@ -1,0 +1,63 @@
+{
+  "_comment": "KARDS 加卡工作流配置。所有路径都写绝对路径，脚本不做隐式推断。",
+
+  "engine": {
+    "root": "D:\\UE_5.6",
+    "editorCmd": "D:\\UE_5.6\\Engine\\Binaries\\Win64\\UnrealEditor-Cmd.exe",
+    "project": "D:\\KardsRecoveredProject\\UnrealProject\\kards.uproject",
+    "assetRegistryToolPlugin": "E:\\KARDS\\_kards_writecard\\_analysis\\AssetRegistryTool-main\\AssetRegistryTool-main",
+    "projectPluginsDir": "D:\\KardsRecoveredProject\\UnrealProject\\Plugins"
+  },
+
+  "tools": {
+    "usmap": "C:\\Dumper-7\\5.6.1-0+++UE5+Release-5.6-Fork-kards\\Mappings\\5.6.1-0+++UE5+Release-5.6-Fork-kards.usmap",
+    "usmapStagingDir": "C:\\Dumper-7\\5.6.1-0+++UE5+Release-5.6-Fork-kards\\Mappings",
+    "usmapStagingName": "5.6.1-0+++UE5+Release-5.6-Fork-kards.usmap",
+    "cardCompilerRoot": "C:\\Users\\Administrator\\Downloads\\KardsCardCompiler",
+    "cardcDll": "C:\\Users\\Administrator\\Downloads\\KardsCardCompiler\\tools\\kards-cardc\\bin\\Release\\net8.0\\kards-cardc.dll",
+    "repak": "C:\\Users\\Administrator\\Downloads\\repak\\repak.exe",
+    "kardsTable": "E:\\KARDS\\card_pipeline\\tools\\KardsTable\\bin\\Release\\net8.0\\KardsTable.exe",
+    "python": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "fixRegistryClass": "E:\\KARDS\\card_pipeline\\tools\\fix_registry_class.py"
+  },
+
+  "game": {
+    "root": "E:\\KARDS\\default\\game",
+    "paksDir": "E:\\KARDS\\default\\game\\kards\\Content\\Paks",
+    "basePak": "E:\\KARDS\\default\\game\\kards\\Content\\Paks\\kards-Windows.pak",
+    "pakKey": "0xC257932734957B6D467FA16FCF728D5A16A5BDD07F6E20EE6E3155E898305CC0",
+    "registryInPak": "kards/AssetRegistry.bin",
+    "catalogInPak": "kards/Content/Structs/deckCodeIDsTable2",
+    "catalogLocalPath": "kards/Content/Structs/deckCodeIDsTable2.uasset"
+  },
+
+  "card": {
+    "assembly": "E:\\KARDS\\card_pipeline\\cards\\bin\\Release\\net8.0\\KardsDiy.SovietDefector.dll",
+    "assemblyProject": "E:\\KARDS\\card_pipeline\\cards\\KardsDiy.SovietDefector.csproj",
+    "type": "KardsDiy.SovietDefector.SovietDefectorArtilleryPack",
+    "name": "card_unit_sov_defector_artillery",
+    "assetPathInPak": "kards/Content/Blueprints/Cards/Mods/Soviet/units/card_unit_sov_defector_artillery",
+    "id": 910101,
+    "deckCode": "V9",
+    "pakName": "KardsDIY_sov_defector_P.pak",
+    "filterPath": "/Game/Blueprints/Cards/Mods",
+    "cdoExport": "Default__card_unit_sov_defector_artillery_C"
+  },
+
+  "profile": "E:\\KARDS\\card_pipeline\\profile-ue5.6.1-game",
+
+  "paths": {
+    "workRoot": "E:\\KARDS\\card_pipeline\\_work",
+    "quarantine": "E:\\KARDS\\card_pipeline\\_quarantine",
+    "baseRegistryCache": "E:\\KARDS\\card_pipeline\\_work\\base\\AssetRegistry.bin",
+    "catalogCache": "E:\\KARDS\\card_pipeline\\_work\\base\\deckCodeIDsTable2"
+  },
+
+  "_notes": {
+    "AssetClass": "编译器 writer 不序列化 AssetClass，必须走 List->fix->convert 补回，否则卡进不了卡池",
+    "hashTable": "绝不能用 UAssetRegistry 的回写能力直接产出注册表（name 哈希表会被写成全零，整个卡库消失）",
+    "cardSetWhitelist": "收藏只列 GetAllActiveStaticCards 硬编码链里的卡包；Core(14)/Wildcards(11)/Reserved(22) 不在链里",
+    "cdoDefaults": "CDO 只序列化非默认值，缺失属性必须新增而不是修改",
+    "filterPaths": "Merge 必须带 -FilterPaths，否则全量合并会崩在 AssetRegistryTool.dll"
+  }
+}

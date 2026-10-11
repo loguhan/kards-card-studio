@@ -1,0 +1,56 @@
+# ── 本机配置（含各人绝对路径）──
+config.local.json
+
+# ── 构建产物 ──
+_build/
+_work/
+_work_intel/
+_stage/
+_quarantine/
+_release/
+_logs/
+_diag/
+*.pak
+*.log
+
+# ── .NET ──
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# ── UE ──
+Binaries/
+Intermediate/
+DerivedDataCache/
+Saved/
+*.uasset
+*.uexp
+*.ubulk
+*.umap
+
+# ── 游戏/引擎派生数据（体积大，各人自备）──
+*.bin
+*.usmap
+*.pdb
+
+# ── Python ──
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ── 编辑器 / 系统 ──
+.vscode/
+.idea/
+graphflow-out/
+.graphflow/
+.graphflow-cache/
+.DS_Store
+Thumbs.db
+
+# vendor（依赖自行放置，见 vendor/README.md）
+vendor/*
+!vendor/README.md
+

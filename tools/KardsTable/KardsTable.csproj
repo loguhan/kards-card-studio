@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>KardsTable</AssemblyName>
+    <RootNamespace>KardsTable</RootNamespace>
+    <NoWarn>CS0618;CS0168;CS0219</NoWarn>
+  </PropertyGroup>
+
+  <!--
+    KardsTable 依赖 UAssetAPI（来自 KardsCardCompiler 仓库的 vendored 子模块）。
+    路径解析顺序：环境变量 KARDS_COMPILER_SRC → 仓库内 vendor/KardsCardCompiler
+  -->
+  <PropertyGroup>
+    <CompilerSrc Condition="'$(KARDS_COMPILER_SRC)' != ''">$(KARDS_COMPILER_SRC)</CompilerSrc>
+    <CompilerSrc Condition="'$(CompilerSrc)' == '' and Exists('$(MSBuildThisFileDirectory)..\..\vendor\KardsCardCompiler')">$(MSBuildThisFileDirectory)..\..\vendor\KardsCardCompiler</CompilerSrc>
+    <UAssetApiProj>$(CompilerSrc)\src\UAssetAPI\UAssetAPI.csproj</UAssetApiProj>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(UAssetApiProj)" />
+  </ItemGroup>
+
+  <Target Name="CheckCompilerConfigured" BeforeTargets="ResolveProjectReferences">
+    <Error Condition="'$(CompilerSrc)' == ''"
+           Text="找不到 KardsCardCompiler。请设环境变量 KARDS_COMPILER_SRC，或克隆到 $(MSBuildThisFileDirectory)..\..\vendor\KardsCardCompiler" />
+  </Target>
+
+</Project>

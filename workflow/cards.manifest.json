@@ -1,0 +1,58 @@
+{
+  "card_unit_death_dragon": {
+    "deck": "Z8",
+    "id": 910408
+  },
+  "card_event_poem_for_all_life": {
+    "deck": "Z5",
+    "id": 910405
+  },
+  "card_event_ops_final": {
+    "deck": "VC",
+    "id": 910600
+  },
+  "card_event_silver_wolf_999_a": {
+    "deck": "Z2",
+    "id": 910402
+  },
+  "card_event_test_counter": {
+    "deck": "ZY",
+    "id": 910300
+  },
+  "card_event_achern": {
+    "deck": "Z1",
+    "id": 910401
+  },
+  "card_event_xiadie_a": {
+    "deck": "Z7",
+    "id": 910407
+  },
+  "card_event_xiadie_b": {
+    "deck": "Z9",
+    "id": 910409
+  },
+  "card_event_intelligence_tampering": {
+    "deck": "VA",
+    "id": 910102
+  },
+  "card_event_dance_of_flowers_and_arrows": {
+    "deck": "Z6",
+    "id": 910406
+  },
+  "card_event": {
+    "deck": "ZZ",
+    "id": 910200
+  },
+  "card_event_silver_wolf_999_b": {
+    "deck": "Z3",
+    "id": 910403
+  },
+  "card_event_xilian": {
+    "deck": "Z4",
+    "id": 910404
+  },
+  "card_unit_blitz_artillery_1011": {
+    "deck": "K9",
+    "id": 910100
+  }
+}

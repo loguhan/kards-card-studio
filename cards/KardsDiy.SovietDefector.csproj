@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>KardsDiy.SovietDefector</AssemblyName>
+    <RootNamespace>KardsDiy.SovietDefector</RootNamespace>
+  </PropertyGroup>
+
+  <!--
+    引用已编译的编译器核心，不触碰 KardsCardCompiler 自己的源码树。
+    路径解析顺序：环境变量 KARDS_COMPILER_SRC → 仓库内 vendor/KardsCardCompiler
+  -->
+  <PropertyGroup>
+    <CompilerSrc Condition="'$(KARDS_COMPILER_SRC)' != ''">$(KARDS_COMPILER_SRC)</CompilerSrc>
+    <CompilerSrc Condition="'$(CompilerSrc)' == '' and Exists('$(MSBuildThisFileDirectory)..\vendor\KardsCardCompiler')">$(MSBuildThisFileDirectory)..\vendor\KardsCardCompiler</CompilerSrc>
+    <CoreDll>$(CompilerSrc)\src\KardsCardCompiler.Core\bin\Release\net8.0\KardsCardCompiler.Core.dll</CoreDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="KardsCardCompiler.Core">
+      <HintPath>$(CoreDll)</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CheckCompilerConfigured" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="'$(CompilerSrc)' == ''"
+           Text="找不到 KardsCardCompiler。请设环境变量 KARDS_COMPILER_SRC，或克隆到 $(MSBuildThisFileDirectory)..\vendor\KardsCardCompiler" />
+  </Target>
+
+</Project>
